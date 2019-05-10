@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title> <#include "/header.html">
+<link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css" media="all">
+</head>
+<body>
+	<div id="rrapp" v-cloak>
+		<div v-show="showList">
+			<div class="grid-btn">
+				<input type="text" id="startdate" class="form-control" v-model="q.startlogtime" @keyup.enter="query" placeholder="起始日期" style="width: 7%; float: left; margin-left: 1%"> 
+				<span style="float: left; margin-left: 1%; margin-top: 0.4%">至</span>
+				<input type="text" id="enddate" class="form-control" v-model="q.endlogtime" @keyup.enter="query" placeholder="结束日期" style="width: 7%; float: left; margin-left: 1%"> 
+				<a class="btn btn-default" @click="clear" style="float: left; margin-left: 1%"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+				<a class="btn btn-default" @click="query"><i class="fa fa-search"></i>&nbsp;查询</a> 
+				<#if shiro.hasPermission("sys:weighingstock:save")>
+				<a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+				</#if> 
+				<#if shiro.hasPermission("sys:weighingstock:update")> 
+				<a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a> 
+				</#if> 
+				<#if shiro.hasPermission("sys:weighingstock:delete")> <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+				</#if>
+				<div class="layui-form" style="width: 18%; float: right;">
+					<div class="layui-form-item">
+						<label class="layui-form-label">厂地：</label>
+						<div class="layui-input-inline" @click="option">
+							<select id="selected" lay-filter="lay">
+								<option value="全部" selected>所有</option>
+								<option v-for="place in placelist"
+									v-bind:value="place.abbreviation">{{ place.place }}</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<table id="jqGrid"></table>
+			<div id="jqGridPager"></div>
+		</div>
+
+		<div v-show="!showList" class="panel panel-default">
+			<div class="panel-heading">{{title}}</div>
+			<form class="form-horizontal">
+			<div class="form-group">
+					<div class="col-sm-2 control-label">地点</div>
+					<!-- <div id="select-radio"> -->
+					<div class="col-sm-10">
+						<label v-for="location in placelist" class="radio-inline">
+							<input type="radio" :value="location.abbreviation" v-model="weighingStock.placeIdList">{{location.place}}
+						</label>
+					</div>
+				</div>
+				<!-- <div class="form-group">
+					<div class="col-sm-2 control-label">所在地</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.location" placeholder="所在地" />
+					</div>
+				</div> -->
+				<div class="form-group">
+					<div class="col-sm-2 control-label">发送时间</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.sendtime" placeholder="发送时间" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">收货单位</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.consignee" placeholder="收货单位" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">日期</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.dispatchDate" placeholder="日期" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">货名</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.cargoName" placeholder="货名" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">规格</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.specification" placeholder="规格" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">车号</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.plateNumber" placeholder="车号" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">毛重</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.grossWeight" placeholder="毛重" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">皮重</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.tareWeight" placeholder="皮重" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">净重</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.netWeight" placeholder="净重" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">地点</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.site" placeholder="地点" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">备注</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.remark" placeholder="备注" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">司磅员</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.weighman" placeholder="司磅员" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">监磅人</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.superintendent" placeholder="监磅人" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">收货人</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control"
+							v-model="weighingStock.consigneeman" placeholder="收货人" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label"></div>
+					<input type="button" class="btn btn-primary" @click="saveOrUpdate"
+						value="确定" /> &nbsp;&nbsp;<input type="button"
+						class="btn btn-warning" @click="reload" value="返回" />
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="${request.contextPath}/statics/js/modules/sys/laydate/laydate.js"></script>
+	<script src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
+	<script src="${request.contextPath}/statics/js/modules/sys/weighingstock.js?_${.now?long}"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.AmpmonInfoDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.AmpmonInfoEntity" id="ampmonInfoMap">
+        <result property="terminalid" column="Terminalid"/>
+        <result property="mixturetype" column="MixtureType"/>
+        <result property="mintime" column="MinTime"/>
+        <result property="aggregatea" column="AggregateA"/>
+        <result property="aggregateb" column="AggregateB"/>
+        <result property="aggregatec" column="AggregateC"/>
+        <result property="aggregated" column="AggregateD"/>
+        <result property="aggregatee" column="AggregateE"/>
+        <result property="aggregatef" column="AggregateF"/>
+        <result property="aggregateg" column="AggregateG"/>
+        <result property="aggregateh" column="AggregateH"/>
+        <result property="pitchweight" column="Pitchweight"/>
+        <result property="powder1" column="Powder1"/>
+        <result property="powder2" column="Powder2"/>
+        <result property="additiveweight" column="Additiveweight"/>
+        <result property="mintemperature" column="Mintemperature"/>
+        <result property="heattemperature" column="Heattemperature"/>
+        <result property="logtime" column="Logtime"/>
+        <result property="latitude" column="Latitude"/>
+        <result property="longitude" column="Longitude"/>
+        <result property="logdate" column="logdate"/>
+    </resultMap>
+    
+    
+	<select id="calculateComponentQ"  resultMap="ampmonInfoMap">
+	  SELECT IFNULL(ROUND(SUM(AggregateA),3),0) AS 'AggregateA',IFNULL(ROUND(SUM(AggregateB),3),0)AS 'AggregateB',
+	  IFNULL(ROUND(SUM(AggregateC),3),0) AS 'AggregateC',IFNULL(ROUND(SUM(AggregateD),3),0) AS 'AggregateD',
+	  IFNULL(ROUND(SUM(AggregateE),3),0) AS 'AggregateE',IFNULL(ROUND(SUM(AggregateF),3),0) AS 'AggregateF',
+	  IFNULL(ROUND(SUM(AggregateG),3),0) AS 'AggregateG',IFNULL(ROUND(SUM(AggregateH),3),0) AS 'AggregateH',
+	  IFNULL(ROUND(SUM(Pitchweight),3),0) AS 'Pitchweight',IFNULL(ROUND(SUM(Powder1),3),0) AS 'Powder1',IFNULL(ROUND(SUM(Powder2),3),0) AS 'Powder2',
+	  IFNULL(ROUND(SUM(Additiveweight),3),0) AS 'Additiveweight'FROM ampmon_info where DATEDIFF(MinTime,NOW()) = 0 and Terminalid = "WD2-3145-AMP-DD22";
+    </select>
+    
+    <select id="calculateComponentL"  resultMap="ampmonInfoMap">
+	  SELECT IFNULL(ROUND(SUM(AggregateA),3),0) AS 'AggregateA',IFNULL(ROUND(SUM(AggregateB),3),0)AS 'AggregateB',
+	  IFNULL(ROUND(SUM(AggregateC),3),0) AS 'AggregateC',IFNULL(ROUND(SUM(AggregateD),3),0) AS 'AggregateD',
+	  IFNULL(ROUND(SUM(AggregateE),3),0) AS 'AggregateE',IFNULL(ROUND(SUM(AggregateF),3),0) AS 'AggregateF',
+	  IFNULL(ROUND(SUM(AggregateG),3),0) AS 'AggregateG',IFNULL(ROUND(SUM(AggregateH),3),0) AS 'AggregateH',
+	  IFNULL(ROUND(SUM(Pitchweight),3),0) AS 'Pitchweight',IFNULL(ROUND(SUM(Powder1),3),0) AS 'Powder1',IFNULL(ROUND(SUM(Powder2),3),0) AS 'Powder2',
+	  IFNULL(ROUND(SUM(Additiveweight),3),0) AS 'Additiveweight'FROM ampmon_info where DATEDIFF(MinTime,NOW()) = 0 and Terminalid = "WD2-3145-AMP-DD21";
+    </select>
+	
+	<select id="countLastMonthA"  resultMap="ampmonInfoMap">
+	 SELECT IFNULL(ROUND(SUM(AggregateA),2),0) AS 'aggregatea',IFNULL(ROUND(SUM(AggregateB),2),0) AS 'aggregateb',IFNULL(ROUND(SUM(AggregateC),2),0) AS 'aggregatec',IFNULL(ROUND(SUM(AggregateD),2),0) AS 'aggregated',
+	IFNULL(ROUND(SUM(AggregateE),2),0) AS 'aggregatee',IFNULL(ROUND(SUM(AggregateF),2),0) AS 'aggregatef',IFNULL(ROUND(SUM(AggregateG),2),0) AS 'aggregateg',IFNULL(ROUND(SUM(AggregateH),2),0) AS 'aggregateh',
+	IFNULL(ROUND(SUM(Pitchweight),2),0) AS 'pitchweight',IFNULL(ROUND(SUM(Powder1),2),0) AS 'powder1',IFNULL(ROUND(SUM(Powder2),2),0) AS 'powder2',IFNULL(ROUND(SUM(Additiveweight),2),0) AS 'additiveweight'
+	FROM (SELECT * FROM ampmon_info WHERE  year(MinTime) = #{dateyear} and MONTH(MinTime)=#{datemonth} AND Terminalid = #{terminalId} AND MixtureType=#{mixturetype} GROUP BY 
+	MinTime,Terminalid,MixtureType,AggregateA,AggregateB,AggregateC,AggregateD,AggregateE,AggregateF,AggregateG,AggregateH, Pitchweight,Powder1,Powder2,Additiveweight,
+	Mintemperature,Heattemperature,Logtime,Latitude,Longitude,logdate )A;
+    </select>
+</mapper>

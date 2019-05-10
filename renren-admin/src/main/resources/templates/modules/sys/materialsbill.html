@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+		<#include "/header.html">
+<link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css"  media="all">
+<link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/print.css">
+</head>
+<body>
+      <div id="rrapp" v-cloak>
+      <div v-show="showList">
+      	<div>
+     	<div class="btn btn-primary" onclick="print1()" id="button" style="float: right;margin-right: 1%"><i class="fa fa-print"></i>&nbsp;打印</div>
+      	<div class="btn btn-default" onclick="search()" style="float: right;margin-right: 1%">查询</div>
+      	<!-- <div class="btn btn-default" onclick="save()" style="float: right;margin-right: 1%">查询</div> -->
+      	<a class="btn btn-default" id="clear" style="float: right;margin-right: 1%">重置</a>
+  		<input type="text" id="searchdate" class="form-control" @keyup.enter="query" placeholder="月份" style="width: 7%;float: right;margin-right: 1%">
+     	<div class="layui-form" style="width: 16%;float: right;padding-right: 1%">
+          	<div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <select id="selected" lay-filter="lay">
+			        <option value="WD2-3145-AMP-DD22" selected>泉水</option>
+			        <option value="WD2-3145-AMP-DD21">六合</option>
+     			 </select>
+			    </div>
+  			</div>
+  		</div>
+  		</div>
+    	<div id="image">
+	      	<div>
+    			<p class="p0"><span id="year"></span>年<span id="month"></span>月沥青砼直接材料费（<span id="place"></span>）</p>
+	     		<p class="p1">注：1.按实验室给的用量</p>
+	     		<p class="p2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.按现行采购单价/不含税</p>
+	     		<p class="noprint">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;特别提示：每月请先行录入成份不含税单价，再输入含水率及废灰等数据，输入完成且确认无误后请点击页面最下方保存按钮</p>
+	     	</div>
+	     	<!-- AC-10 -->
+			<div id="divIdA" class="divstyle">
+	    	</div>
+	    	<!-- 30%***AC-10 -->
+		    <div id="divIdB" class="divstyle">
+		    </div>
+		    <!-- AC-13 -->
+		    <div id="divIdC" class="divstyle">
+		    </div>
+		    <!-- 30%***AC-13 -->
+		    <div id="divIdD" class="divstyle">
+		    </div>
+		    <!-- 35%***AC-13 -->
+		    <div id="divIdK" class="divstyle">
+		    </div>
+		    <!-- AC-16 -->
+		    <div id="divIdE" class="divstyle">
+		    </div>
+		    <!-- 35%***AC-16 -->
+		    <div id="divIdF" class="divstyle">
+		    </div>
+		    <!-- AC-20 -->
+		    <div id="divIdG" class="divstyle">
+		    </div>
+		    <!-- 35%***AC-20 -->
+		    <div id="divIdH" class="divstyle">
+		    </div>
+		    <!-- 40%***AC-20 -->
+		    <div id="divIdL" class="divstyle">
+		    </div>
+		    <!-- AC-25 -->
+		    <div id="divIdI" class="divstyle">
+		    </div>
+		    <!-- 35%***AC-25 -->
+		    <div id="divIdJ" class="divstyle">
+		    </div>
+		    <!-- 40%***AC-25 -->
+		    <div id="divIdM" class="divstyle">
+		    </div>
+		    <!-- SBS-13(玄武岩) -->
+		    <div id="divIdN" class="divstyle">
+		    </div>
+		     <!-- AC-13(玄武岩) -->
+		    <div id="divIdO" class="divstyle">
+		    </div>
+		     <!-- SMA-13(改性沥青油) -->
+		    <div id="divIdP" class="divstyle">
+		    </div>
+		     <!-- SMA-13(70#沥青油) -->
+		    <div id="divIdQ" class="divstyle">
+		    </div>
+		     <!-- SBS-13(石灰岩) -->
+		    <div id="divIdR" class="divstyle">
+		    </div>
+		     <!-- 乳化沥青 -->
+		    <div id="divIdS" class="divstyle">
+		    </div>
+		    <a class="btn btn-default" id="backtop" href="javascript:window.scrollTo( 0, 0 );">返回顶部</a>
+		    <div class="btn btn-primary" id="save" onclick="saveWa()">保存</div>
+   		</div>
+   		</div>
+   		<div v-show="!showList" class="panel panel-default">
+			<div class="panel-heading">{{title}}</div>
+			<form class="form-horizontal">
+				<div class="form-group">
+					<div class="col-sm-2 control-label">地点</div>
+					<label class="radio-inline"> <input type="radio"
+						name="terminalid" value="WD2-3145-AMP-DD22"
+						v-model="unitprice.terminalid" /> 泉水
+					</label> <label class="radio-inline"> <input type="radio"
+						name="terminalid" value="WD2-3145-AMP-DD21"
+						v-model="unitprice.terminalid" /> 六合
+					</label>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">月份</div>
+					<div class="col-sm-10">
+						<input type="text" id="priceMonth" class="form-control"
+							v-model="unitprice.priceMonth" placeholder="月份单价" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">石粉</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceA"
+							placeholder="石粉" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">米砂</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceB"
+							placeholder="米砂" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">瓜子片</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceC"
+							placeholder="瓜子片" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">细碎</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceD"
+							placeholder="细碎" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">玄武岩2#</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceE"
+							placeholder="玄武岩2#" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">玄武岩1#</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceF"
+							placeholder="玄武岩1#" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">沥青油</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceG"
+							placeholder="沥青油" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">铣刨料</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceH"
+							placeholder="铣刨料" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">矿粉</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceI"
+							placeholder="矿粉" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">乙烯焦油</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceJ"
+							placeholder="乙烯焦油" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">燃料油</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceK"
+							placeholder="燃料油" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">抗剥落剂</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceL"
+							placeholder="抗剥落剂" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">木制纤维</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceM"
+							placeholder="木制纤维" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">改性沥青油</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceN"
+							placeholder="改性沥青油" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">乳化剂</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceO"
+							placeholder="乳化剂" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">彩色沥青油</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceP"
+							placeholder="彩色沥青油" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label">红色颜料</div>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" v-model="unitprice.priceQ"
+							placeholder="红色颜料" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-2 control-label"></div>
+					<input type="button" class="btn btn-primary" @click="saveOrUpdate"
+						value="确定" /> &nbsp;&nbsp;<input type="button"
+						class="btn btn-warning" @click="reload" value="返回" />
+				</div>
+			</form>
+		</div>
+    </div>
+   <!--  </div> -->
+<!-- </div> -->
+<script src="${request.contextPath}/statics/js/modules/sys/laydate/laydate.js"></script> 
+<script src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
+<!-- <script src="${request.contextPath}/statics/js/modules/sys/laydate/datefirst.js"></script> -->
+<script src="${request.contextPath}/statics/js/modules/sys/jquery-1.4.4.min.js"></script>
+<script src="${request.contextPath}/statics/js/modules/sys/jquery.jqprint-0.3.js"></script>
+<script src="${request.contextPath}/statics/js/modules/sys/materialsbill.js?_${.now?long}"></script>
+</body>
+</html>

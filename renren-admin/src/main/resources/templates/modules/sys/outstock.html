@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+		<#include "/header.html">
+<link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css"  media="all">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+          <div class="form-group col-sm-4">
+				<input type="text" class="form-control" v-model="q.codename" @keyup.enter="query" placeholder="物料类型" style="width: 30%;float: left;">
+				<input type="text" id="startdate" class="form-control" v-model="q.startlogtime" @keyup.enter="query" placeholder="开始时间" style="width: 32%;float: left;margin-left: 3%">
+				<input type="text" id="enddate" class="form-control" v-model="q.endlogtime" @keyup.enter="query" placeholder="结束时间" style="width: 32%;float: left;margin-left: 3%">
+			</div>
+			<a class="btn btn-default" id="clear">重置</a>
+			<a class="btn btn-default" @click="query">查询</a>
+			<#if shiro.hasPermission("sys:outstock:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("sys:outstock:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("sys:outstock:delete")>
+            <a class="btn btn-danger" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+			<div class="layui-form" style="width: 20%;float: right;padding-right: 1%">
+          	<div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <select id="selected" lay-filter="lay">
+			        <option value="全部" selected>全部</option>
+			        <option value="泉水">泉水</option>
+			        <option value="六合">六合</option>
+     			 </select>
+			    </div>
+  			</div>
+  			</div>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">物料类型</div>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" style="cursor:pointer;" v-model="outstock.codename" @click="materialtypeTree" readonly="readonly" placeholder="物料类型"/>
+                            <!-- <input type="text" class="form-control" v-model="outstock.codename" placeholder="物料类型"/> -->
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">出库日期</div>
+                        <div class="col-sm-10">
+                            <input type="text" id="outstockdate" class="form-control" v-model="outstock.outstockdate" placeholder="出库日期"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">出库重量</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="outstock.outweight" placeholder="出库重量"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">备注</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="outstock.remark" placeholder="备注"/>
+                        </div>
+                    </div>
+				    <div class="form-group">
+                		<div class="col-sm-2 control-label"></div>
+                		<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                		&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            		</div>
+        </form>
+    </div>
+</div>
+
+<!-- 选择物料类型 -->
+<div id="materialtypeLayer" style="display: none;padding:10px;">
+	<ul id="materialtypeTree" class="ztree"></ul>
+</div>
+<script src="${request.contextPath}/statics/js/modules/sys/laydate/laydate.js"></script> 
+<script src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
+<script src="${request.contextPath}/statics/js/modules/sys/outstock.js?_${.now?long}"></script>
+</body>
+</html>

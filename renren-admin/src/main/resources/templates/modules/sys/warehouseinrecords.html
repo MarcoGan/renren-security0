@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+		<#include "/header.html">
+<style type="text/css">
+.costs-marl15{margin-left: 15px;}
+div.costs-uploadfile-div{
+    position:relative;
+    float: right;
+}
+div.costs-uploadfile-div #textfield{
+    width:40%;
+    height:32px;  
+    margin-right: 4%;
+}
+div.costs-uploadfile-div #fileField{
+    width:245px;
+    height:30px;    
+    position: absolute;
+    top: 0;
+    left:0;
+    filter: alpha(opacity:0);
+    opacity: 0;
+}
+div.costs-uploadfile-div .allBtn{
+    padding:0;
+    margin:0;
+    height: 30px;
+    line-height: 30px;
+    width: 80px;
+    background-color: #18b3cf;
+    border: none;
+    color: #fff;
+    }
+</style>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+				<input type="text" id="startdate" class="form-control" v-model="q.startlogtime" @keyup.enter="query" placeholder="起始日期" style="width: 7%;float: left;margin-left: 1%">
+				<input type="text" id="enddate" class="form-control" v-model="q.endlogtime" @keyup.enter="query" placeholder="结束日期" style="width: 7%;float: left;margin-left: 1%">
+      		<a class="btn btn-default" id="clear" style="float: left;margin-left: 1%">重置</a>
+  			<a class="btn btn-default" @click="query">查询</a>
+			<#if shiro.hasPermission("sys:warehouseinrecords:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("sys:warehouseinrecords:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("sys:warehouseinrecords:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+			<!-- <p>
+			 <form id="file_form" action="http://localhost:8080/renren-admin/sys/warehouseinrecords/import"
+			          enctype="multipart/form-data" method="post">
+			            <input type="file" name="file"  id="file_input">
+			            <input class="btn btn-primary" type="submit" value="导入数据">
+			    </form> 
+			    </p> -->
+			    
+			     <div class="costs-uploadfile-div"> 
+			     <form id="file_form" enctype="multipart/form-data">
+				    <input type="file" name="file" id="fileField" onchange="document.getElementById('textfield').value=this.value" /> 
+				    <input type='text' id="textfield" /> 
+				    <a class="btn btn-default"><i class="fa fa-file"></i>&nbsp;浏览</a>
+				    <!-- <button class="allBtn costs-marl15">浏览</button> -->
+				    <!-- <button class="allBtn costs-marl15" id="upload" type="button">上传</button> -->
+				   	<a class="btn btn-primary" id="upload"><i class="fa fa-download"></i>&nbsp;导入Excel</a>
+				    </form>
+				</div>
+				
+		    <!-- <p>
+		 	<form id="file_form" enctype="multipart/form-data">
+		            <input type="file" name="file">
+		            <a class="btn btn-primary" id="upload"><i class="fa fa-download"></i>&nbsp;导入Excel</a>
+		            <input class="btn btn-primary" id="upload" value="导入数据">
+		    </form> 
+		    </p> -->
+		    
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+														                   <!--  <div class="form-group">
+                        <div class="col-sm-2 control-label">日期</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.logtime" placeholder="日期"/>
+                        </div>
+                    </div> -->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">出库日期</div>
+                        <div class="col-sm-10">
+                            <input type="text" id="logtime" class="form-control" v-model="warehouseinRecords.logtime" placeholder="出库日期"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">审核标志</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.reviewSign" placeholder="审核标志"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">单据编号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.receiptNumber" placeholder="单据编号"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">供应商</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.supplier" placeholder="供应商"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">摘要</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.digest" placeholder="摘要"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">收料仓库</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.warehouse" placeholder="收料仓库"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">物料长代码</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.materialCode" placeholder="物料长代码"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">物料名称</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.materialName" placeholder="物料名称"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">规格型号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.materialModel" placeholder="规格型号"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">单位</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.unit" placeholder="单位"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">实收数量</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.receivedQuantity" placeholder="实收数量"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">单价</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.unitprice" placeholder="单价"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.money" placeholder="金额"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">开票数量</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.invoiceNum" placeholder="开票数量"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">备注</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.remark" placeholder="备注"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">交货地点</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.deliveryPoints" placeholder="交货地点"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">部门</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.department" placeholder="部门"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">业务员</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="warehouseinRecords.executive" placeholder="业务员"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="${request.contextPath}/statics/js/modules/sys/laydate/laydate.js"></script> 
+<script src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
+<script src="${request.contextPath}/statics/js/modules/sys/warehouseinrecords.js?_${.now?long}"></script>
+</body>
+</html>

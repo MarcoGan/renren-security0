@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.WarehouseinRecordsDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.WarehouseinRecordsEntity" id="warehouseinRecordsMap">
+        <result property="id" column="id"/>
+        <result property="logtime" column="logtime"/>
+        <result property="reviewSign" column="review_sign"/>
+        <result property="receiptNumber" column="receipt_number"/>
+        <result property="supplier" column="supplier"/>
+        <result property="digest" column="digest"/>
+        <result property="warehouse" column="warehouse"/>
+        <result property="materialCode" column="material_code"/>
+        <result property="materialName" column="material_name"/>
+        <result property="materialModel" column="material_model"/>
+        <result property="unit" column="unit"/>
+        <result property="receivedQuantity" column="received_quantity"/>
+        <result property="unitprice" column="unitprice"/>
+        <result property="money" column="money"/>
+        <result property="invoiceNum" column="invoice_num"/>
+        <result property="remark" column="remark"/>
+        <result property="deliveryPoints" column="delivery_points"/>
+        <result property="department" column="department"/>
+        <result property="executive" column="executive"/>
+    </resultMap>
+
+	 <select id="selectByWarehouseResord" resultType="java.lang.Integer">
+		    SELECT
+		    count(*)
+		    FROM warehousein_records
+		    WHERE receipt_number=#{receiptNumber}
+	  </select>
+	  
+	  <update id="updateWarehouseByName" parameterType="io.renren.modules.sys.entity.WarehouseinRecordsEntity">
+		    update warehousein_records
+		    set
+		    logtime=#{logtime},
+		    review_sign=#{reviewSign},
+		    supplier=#{supplier},
+		    digest=#{digest},
+		    warehouse=#{warehouse},
+		    material_code=#{materialCode},
+		    material_name=#{materialName},
+		    material_model=#{materialModel},
+		    unit=#{unit},
+		    received_quantity=#{receivedQuantity},
+		    unitprice=#{unitprice},
+		    money=#{money},
+		    invoice_num=#{invoiceNum},
+		    remark=#{remark},
+		    delivery_points=#{deliveryPoints},
+		    department=#{department},
+		    executive=#{executive}
+		    where receipt_number = #{receiptNumber}
+  	 </update>
+  	 
+  	  <select id="getTotalQuantity" resultType="java.lang.Double">
+		    SELECT IFNULL(ROUND(SUM(received_quantity),2),0) from warehousein_records where 1=1 
+		    <if test="startlogtime!=null and startlogtime !=''">
+			and	logtime &gt;= #{startlogtime}
+			</if>
+			<if test="endlogtime!=null and endlogtime !=''">
+			and logtime &lt;= #{endlogtime}
+			</if>
+	  </select>
+	  
+	   <select id="getTotalMoney" resultType="java.lang.Double">
+		    SELECT IFNULL(ROUND(SUM(money),2),0) from warehousein_records  where 1=1 
+		    <if test="startlogtime!=null and startlogtime !=''">
+			and	logtime &gt;= #{startlogtime}
+			</if>
+			<if test="endlogtime!=null and endlogtime !=''">
+			and logtime &lt;= #{endlogtime}
+			</if>
+	  </select>
+	  <select id="getTotalInvoiceNum" resultType="java.lang.Double">
+		    SELECT IFNULL(ROUND(SUM(invoice_num),2),0) from warehousein_records where 1=1 
+		    <if test="startlogtime!=null and startlogtime !=''">
+			and	logtime &gt;= #{startlogtime}
+			</if>
+			<if test="endlogtime!=null and endlogtime !=''">
+			and logtime &lt;= #{endlogtime}
+			</if>
+	  </select>
+</mapper>

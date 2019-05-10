@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.StockDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.StockEntity" id="stockMap">
+        <result property="id" column="id"/>
+        <result property="codename" column="codeName"/>
+        <result property="stockweight" column="stockWeight"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+	<select id="queryList"  resultMap="stockMap">
+	  SELECT * from stock where remark like '%泉水%'
+    </select>
+    
+    <select id="queryListL"  resultMap="stockMap">
+	  SELECT * from stock where remark like '%六合%'
+    </select>
+    
+    <update id="updateStockweight">
+     update stock
+        <set>
+            <if test="dataA != null">stockWeight=#{dataA}</if>
+        </set>
+        where codeName=#{codeName} and remark like '%泉水%'
+    </update>
+    
+    <update id="updateStockweightL">
+     update stock
+        <set>
+            <if test="dataA != null">stockWeight=#{dataA}</if>
+        </set>
+        where codeName=#{codeName} and remark like '%六合%'
+    </update>
+
+</mapper>

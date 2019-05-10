@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.UnitpriceDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.UnitpriceEntity" id="unitpriceMap">
+        <result property="id" column="id"/>
+        <result property="priceMonth" column="price_month"/>
+        <result property="terminalid" column="Terminalid"/>
+        <result property="priceA" column="price_a"/>
+        <result property="priceB" column="price_b"/>
+        <result property="priceC" column="price_c"/>
+        <result property="priceD" column="price_d"/>
+        <result property="priceE" column="price_e"/>
+        <result property="priceF" column="price_f"/>
+        <result property="priceG" column="price_g"/>
+        <result property="priceH" column="price_h"/>
+        <result property="priceI" column="price_i"/>
+        <result property="priceJ" column="price_j"/>
+        <result property="priceK" column="price_k"/>
+        <result property="priceL" column="price_l"/>
+        <result property="priceM" column="price_m"/>
+        <result property="priceN" column="price_n"/>
+        <result property="priceO" column="price_o"/>
+        <result property="priceP" column="price_p"/>
+        <result property="priceQ" column="price_q"/>
+    </resultMap>
+
+	<select id="getprice"  resultMap="unitpriceMap">
+	         select * from unitprice where price_month = #{searchdate} and Terminalid = #{terminalId};
+    </select>
+</mapper>

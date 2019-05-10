@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.ComponentDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.ComponentEntity" id="componentMap">
+        <result property="terminalid" column="Terminalid"/>
+        <result property="mixturetype" column="MixtureType"/>
+        <result property="componentA" column="component_a"/>
+        <result property="componentB" column="component_b"/>
+        <result property="componentC" column="component_c"/>
+        <result property="componentD" column="component_d"/>
+        <result property="componentE" column="component_e"/>
+        <result property="componentF" column="component_f"/>
+        <result property="logtime" column="logtime"/>
+    </resultMap>
+	<select id="calculateComponentQ"  resultMap="componentMap">
+	         SELECT IFNULL(ROUND(SUM(component_a),3),0) as 'component_a',IFNULL(ROUND(SUM(component_b),3),0) as 'component_b',IFNULL(ROUND(SUM(component_c),3),0) as 'component_c',
+				IFNULL(ROUND(SUM(component_d),3),0) as 'component_d',IFNULL(ROUND(SUM(component_e),3),0) as 'component_e',IFNULL(ROUND(SUM(component_f),3),0) as 'component_f'
+				FROM component where DATEDIFF(logtime,NOW()) = 0 and Terminalid = "WD2-3145-AMP-DD22";
+    </select>
+    
+    <select id="calculateComponentL"  resultMap="componentMap">
+	         SELECT IFNULL(ROUND(SUM(component_a),3),0) as 'component_a',IFNULL(ROUND(SUM(component_b),3),0) as 'component_b',IFNULL(ROUND(SUM(component_c),3),0) as 'component_c',
+				IFNULL(ROUND(SUM(component_d),3),0) as 'component_d',IFNULL(ROUND(SUM(component_e),3),0) as 'component_e',IFNULL(ROUND(SUM(component_f),3),0) as 'component_f'
+				FROM component where DATEDIFF(logtime,NOW()) = 0 and Terminalid = "WD2-3145-AMP-DD21";
+    </select>
+	
+	<select id="componetLastMonthA"  resultMap="componentMap">
+	        SELECT IFNULL(ROUND(SUM(component_a),3),0) as 'component_a',IFNULL(ROUND(SUM(component_b),3),0) as 'component_b',IFNULL(ROUND(SUM(component_c),3),0) as 'component_c',
+				IFNULL(ROUND(SUM(component_d),3),0) as 'component_d',IFNULL(ROUND(SUM(component_e),3),0) as 'component_e',IFNULL(ROUND(SUM(component_f),3),0) as 'component_f'
+				FROM component WHERE  year(logtime) = #{dateyear} and MONTH(logtime)=#{datemonth} AND Terminalid = #{terminalId} AND MixtureType=#{mixturetype};
+    </select>
+</mapper>

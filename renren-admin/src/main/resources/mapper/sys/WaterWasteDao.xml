@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.sys.dao.WaterWasteDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.sys.entity.WaterWasteEntity" id="waterWasteMap">
+        <result property="id" column="id"/>
+        <result property="site" column="site"/>
+        <result property="month" column="month"/>
+        <result property="materialtype" column="materialtype"/>
+        <result property="limestoneWater" column="limestone_water"/>
+        <result property="limestoneWaste" column="limestone_waste"/>
+        <result property="melonslicesWater" column="melonslices_water"/>
+        <result property="melonslicesWaste" column="melonslices_waste"/>
+        <result property="millingMaterialWater" column="milling_material_water"/>
+        <result property="millingMaterialWaste" column="milling_material_waste"/>
+        <result property="comminutionWater" column="comminution_water"/>
+        <result property="comminutionWaste" column="comminution_waste"/>
+        <result property="highMaterial1Water" column="high_material1_water"/>
+        <result property="highMaterial1Waste" column="high_material1_waste"/>
+        <result property="highMaterial2Water" column="high_material2_water"/>
+        <result property="highMaterial2Waste" column="high_material2_waste"/>
+        <result property="woodFiber" column="wood_fiber"/>
+        <result property="antistrippingAgent" column="antistripping_agent"/>
+    </resultMap>
+    
+    <select id="queryById"  resultMap="waterWasteMap">
+	  SELECT * from water_waste where id = #{Id}
+    </select>
+    
+    <insert id="insertWWE">
+    	insert into water_waste (site,month,materialtype,limestone_water,limestone_waste,melonslices_water,melonslices_waste,milling_material_water,
+		milling_material_waste,comminution_water,comminution_waste,high_material1_water,high_material1_waste,high_material2_water,high_material2_waste,
+		wood_fiber,antistripping_agent)
+  		values (#{site},#{month},#{materialtype},#{limestoneWater},#{limestoneWaste},
+  		#{melonslicesWater},#{melonslicesWaste},#{millingMaterialWater},#{millingMaterialWaste},
+  		#{comminutionWater},#{comminutionWaste},#{highMaterial1Water},#{highMaterial1Waste},
+  		#{highMaterial2Water},#{highMaterial2Waste},#{woodFiber},#{antistrippingAgent})
+    </insert>
+    
+    <update id="updateWWE">
+     update water_waste
+        <set>
+            site=#{site},
+            month=#{month},
+            materialtype=#{materialtype},
+            limestone_water=#{limestoneWater},
+            limestone_waste=#{limestoneWaste},
+            melonslices_water=#{melonslicesWater},
+            melonslices_waste=#{melonslicesWaste},
+            milling_material_water=#{millingMaterialWater},
+            milling_material_waste=#{millingMaterialWaste},
+            comminution_water=#{comminutionWater},
+            comminution_waste=#{comminutionWaste},
+            high_material1_water=#{highMaterial1Water},
+            high_material1_waste=#{highMaterial1Waste},
+            high_material2_water=#{highMaterial2Water},
+            high_material2_waste=#{highMaterial2Waste},
+            wood_fiber=#{woodFiber},
+            antistripping_agent=#{antistrippingAgent}
+        </set>
+        where id = #{Id}
+    </update>
+    
+     <select id="queryBySSM"  resultMap="waterWasteMap">
+	  SELECT * from water_waste where month = #{searchdate} and site = #{terminalId} and materialtype = #{mixturetype}
+    </select>
+
+
+</mapper>

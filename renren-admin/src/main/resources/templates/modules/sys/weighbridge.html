@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+		<#include "/header.html">
+		<link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css"  media="all">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+        <div class="form-group col-sm-4">
+				<input type="text" class="form-control" v-model="q.carno" @keyup.enter="query" placeholder="车牌号" style="width: 25%;float: left;">
+				<input type="text" id="startdate" class="form-control" v-model="q.startlogtime" @keyup.enter="query" placeholder="开始时间" style="width: 30%;float: left;margin-left: 3%">
+				<span style="float: left;margin-left: 3%;margin-top: 0.5%">至</span>
+				<input type="text" id="enddate" class="form-control" v-model="q.endlogtime" @keyup.enter="query" placeholder="结束时间" style="width: 30%;float: left;margin-left: 3%">
+			</div>
+			<a class="btn btn-default" @click="clear"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+			<a class="btn btn-default" @click="query"><i class="fa fa-search"></i>&nbsp;查询</a>
+			<#if shiro.hasPermission("sys:weighbridge:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("sys:weighbridge:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("sys:weighbridge:delete")>
+            <a class="btn btn-danger" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+			<div class="layui-form" style="width: 18%;float: right;">
+          	<div class="layui-form-item">
+          	<label class="layui-form-label">厂地：</label>
+			    <div class="layui-input-inline" @click="option">
+			      <select id="selected" lay-filter="lay">
+			       <option value="全部" selected>所有</option>
+			       <option v-for="place in place" v-bind:value="place.abbreviation">{{ place.place }}</option>
+			        <!-- <option value="全部" selected>全部</option> -->
+			        <!-- <option value="QS">泉水</option>
+			        <option value="LH">六合</option> -->
+     			 </select>
+			    </div>
+  			</div>
+  			</div>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+					<div class="form-group">
+                     <div class="col-sm-2 control-label">地点</div>
+                        <!-- <div id="select-radio"> -->
+                     <div class="col-sm-10">
+                     <label v-for="location in placelist" class="radio-inline">
+						<input type="radio" :value="location.abbreviation" v-model="weighbridge.placeIdList">{{location.place}}
+					</label>
+					</div>
+                        <!-- <label class="radio-inline">
+							<input type="radio" name="terminalid" value="QS" v-model="weighbridge.terminalid"/> 泉水
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="terminalid" value="LH" v-model="weighbridge.terminalid"/> 六合
+						</label> -->
+						<!-- </div> -->
+                        <!-- <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="weighbridge.terminalid" placeholder="终端Id"/>
+                        </div> -->
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" id="logtime" class="form-control" v-model="weighbridge.logtime" placeholder="时间"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">物料类型</div>
+                        <div class="col-sm-10">
+                        	<input type="text" class="form-control" style="cursor:pointer;" v-model="weighbridge.codename" @click="materialtypeTree" readonly="readonly" placeholder="物料类型"/>
+                            <!-- <input type="text" class="form-control" v-model="weighbridge.codename" placeholder="物料类型"/> -->
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">重量</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="weighbridge.weight" placeholder="重量"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">车牌号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="weighbridge.carno" placeholder="车牌号"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">车辆进厂或出厂</div>
+                        <label class="radio-inline">
+							<input type="radio" name="inorout" value="0" v-model="weighbridge.inorout"/> 出厂
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="inorout" value="1" v-model="weighbridge.inorout"/> 进厂
+						</label>
+                        <!-- <div class="col-sm-10">
+                         	<select class="form-control" v-model="weighbridge.inorout">
+								<option value="进场" >进场</option>
+								<option value="出场" >出场</option>
+							</select>
+                            <input type="text" class="form-control" v-model="weighbridge.inorout" placeholder="车辆进场或出场"/>
+                        </div> -->
+                    </div>
+					<div class="form-group">
+                		<div class="col-sm-2 control-label"></div>
+               				<input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                			&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            		</div>
+        </form>
+    </div>
+</div>
+
+<!-- 选择物料类型 -->
+<div id="materialtypeLayer" style="display: none;padding:10px;">
+	<ul id="materialtypeTree" class="ztree"></ul>
+</div>
+<script src="${request.contextPath}/statics/js/modules/sys/laydate/laydate.js"></script> 
+<script src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
+<script src="${request.contextPath}/statics/js/modules/sys/weighbridge.js?_${.now?long}"></script>
+</body>
+</html>

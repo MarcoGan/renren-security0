@@ -1,0 +1,119 @@
+table.gridtable {
+          font-family: verdana,arial,sans-serif;
+          font-size:10px;
+          color:#333333;
+          border-width: 1px;
+          border-color: #666666;
+          border-collapse: collapse;
+          font-size: 10px;
+      }
+table.gridtable th {
+          border-width: 1px;
+          padding: 8px;
+          border-style: solid;
+          border-color: #666666;
+          background-color: #dedede;
+          text-align:center;
+          vertical-align:middle;
+          font-size: 10px;
+          font-weight: bolder;
+          width: 8%;
+      }
+table.gridtable td {
+          border-width: 1px;
+          padding: 8px;
+          border-style: solid;
+          border-color: #666666;
+          background-color: #ffffff;
+          text-align:center;
+          vertical-align:middle;
+      	  font-size: 10px;
+      	 }
+table.gridtable input{
+	width: 100%
+}
+
+.p0{	
+		/* border:1px solid #333; */
+  		width:100%;
+		letter-spacing:1px;
+		font-weight: bold;
+      	font-size: 17px;
+      	/* text-align:center; */
+      	display: block;
+      	margin-left: 31%;
+	}
+.p1	{
+      	font-weight: bold;
+      	font-size: 15px;
+      	color: #666666;
+      	margin-top: 1%;
+      	}
+.p2	{
+      	font-weight: bold;
+      	font-size: 15px;
+      	color: #666666;
+      	margin-top: 0.5%;
+		}
+		
+.noprint	{
+      	font-weight: bold;
+      	font-size: 15px;
+      	color: #804000;
+      	margin-top: 0.5%;
+		}
+#save{
+	float: right;
+	margin-right: 1%;
+	margin-top: 1%;
+	margin-bottom: 1%
+}
+
+#backtop{
+	float: right;
+	margin-right: 2%;
+	margin-top: 1%;
+	margin-bottom: 1%
+}
+
+@media print {
+        .noprint{
+          display: none;
+        }
+        #save{
+          display: none;
+        }
+        #backtop{
+        display: none;
+        }
+}
+.divstyle{
+		margin-top: 1%;
+      	float: left;
+      	margin-left:0.6%;
+      	margin-right: 2.1%;
+}
+/* #divIdA	{
+      	margin-top: 1.5%;
+      	float: left;
+      	margin-left:0.8%;
+      	}
+#divIdB	{
+      	margin-top: 1.5%;
+      	float: left;
+      	margin-left:0.8%;
+      	}
+#divIdC	{
+      	margin-top: 1.5%;
+      	float: left;
+      	margin-left:0.8%;
+      	}
+#divIdD	{
+      	margin-top: 1.5%;
+      	float: left;
+      	margin-left:0.8%;
+      	} */
+#image	{
+      	padding-left: 1%;
+      	padding-top: 1%
+      	}
